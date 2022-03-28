@@ -1,0 +1,13 @@
+{
+  "projectId": "m7a2w7",
+  "experimentalStudio": true,
+  "chromeWebSecurity": false,
+  "modifyObstructiveCode": false,
+  "defaultCommandTimeout": 30000,
+  "blockHosts": ["*google-analytics.com", "*appsignal.com"],
+  "env": {
+    "host": "https://torus.qa.argos.education",
+    "gas_student_username": "e2e-student@argos.education",
+    "gas_student_password": ""
+  }
+}
