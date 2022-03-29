@@ -2,30 +2,69 @@ defmodule Integration.GasLawsTest do
   use Hound.Helpers
   use ExUnit.Case
 
-  # import PageHelper
+  # Hit an ExUnit timeout without increasing this.
+  @tag timeout: 180_000
 
   hound_session()
 
   test "Gas Laws content" do
-    reset_enter_lesson()
+    try do
+      reset_enter_lesson()
 
-    AdaptiveLessonPage.click_spr_button("start lesson")
+      # This button is custom & in an iframe.
+      AdaptiveLessonPage.click_spr_button("start lesson")
 
-    first_page()
-    second_page()
-    third_page()
-    fourth_page()
+      page_1()
+      page_2()
+      page_3()
+      page_4()
+      page_5()
 
-    :timer.sleep(15000)
+      # Pages 6 - just a single click, just doing it here to simplify
+      AdaptiveLessonPage.click_next()
+
+      # Page 7,8,9 - There's a standard multiple choice flow, so here's a helper.
+      #    Unlike page 5, where we exercise both correct and incorrect values, we just
+      #    get these correct on the first try to quickly get through them.
+      AdaptiveLessonPage.completeMCQPage({:css, "[for=Cylinders-item-2]"})
+      AdaptiveLessonPage.completeMCQPage({:css, "[for=PressureVolume-item-1]"})
+      AdaptiveLessonPage.completeMCQPage({:css, "[for=Inverse-item-1]"})
+
+      page_10()
+      page_11()
+
+      # 12
+      AdaptiveLessonPage.click_next()
+
+      page_13()
+
+      # 14-16
+      AdaptiveLessonPage.completeMCQPage({:css, "[for=ThreeTrialsTemp-item-2]"})
+      AdaptiveLessonPage.completeMCQPage({:css, "[for=GraphRelationship-item-0]"})
+      AdaptiveLessonPage.completeMCQPage({:css, "[for=Equation-item-2]"})
+
+      page_17()
+
+      # TODO - This is about half the lesson, but it demonstrates all the activity types, so we're calling it done for this demo.
+    catch
+      error ->
+        # TODO - this catch didn't work. not sure how to get screenshots of failing tests in CI.
+        take_screenshot()
+        raise error
+    end
+
+    # While actively working on tests, having a big long sleep at the end to see where it finishes was often helpful.
+    # :timer.sleep(15000)
   end
 
-  def first_page do
+  def page_1 do
     # TODO - would be better to search for a specific element with the text instead of any element, maybe add an ID?
+    # Or even better, maybe add some aria-labels so we get better accessibility and testability at the same time.
     assert find_element(:xpath, "//*[contains(text(), 'Gases In Our World')]")
     AdaptiveLessonPage.click_next()
   end
 
-  def second_page do
+  def page_2 do
     assert find_element(:xpath, "//*[contains(text(), 'Ready, Set, Go!')]")
 
     # Ran into an issue here where clicking the options failed because they were behind the bottom footer bar
@@ -47,7 +86,7 @@ defmodule Integration.GasLawsTest do
     AdaptiveLessonPage.close_correct_feedback()
   end
 
-  def third_page do
+  def page_3 do
     # This page is a little annoying, we have to wait for the images to load before we scroll, or we can't scroll far enough.
     # TODO: We can do better than a sleep
     :timer.sleep(2000)
@@ -79,33 +118,165 @@ defmodule Integration.GasLawsTest do
     AdaptiveLessonPage.close_correct_feedback()
   end
 
-  def fourth_page do
+  def page_4 do
     # TODO - better solution than sleep
     :timer.sleep(2000)
 
     AdaptiveLessonPage.scroll(2000)
 
-    iframe = find_element(:css, "#BoylesExperiment > iframe")
-    focus_frame(iframe)
+    find_element(:css, "#BoylesExperiment > iframe")
+    |> focus_frame()
 
     changed = find_element(:xpath, "(//*[contains(@class,'group-area ')])[2]")
     same = find_element(:xpath, "(//*[contains(@class,'group-area ')])[3]")
 
-    pressure = find_element(:xpath, "//*[@class='item-text'][text()='Pressure']")
-    pressure = find_element(:xpath, "//*[@class='item-text'][text()='']")
-    pressure = find_element(:xpath, "//*[@class='item-text'][text()='Pressure']")
-    pressure = find_element(:xpath, "//*[@class='item-text'][text()='Pressure']")
+    find_element(:xpath, "//*[@class='item-text'][text()='Pressure']")
+    |> AdaptiveLessonPage.drag(changed)
 
-    drag(pressure, changed)
+    # ui-sortable need a brief wait between drags to register them correctly
+    :timer.sleep(1000)
+
+    find_element(:xpath, "//*[@class='item-text'][text()='Container volume']")
+    |> AdaptiveLessonPage.drag(changed)
+
+    :timer.sleep(1000)
+
+    find_element(:xpath, "//*[@class='item-text'][text()='Temperature']")
+    |> AdaptiveLessonPage.drag(same)
+
+    :timer.sleep(1000)
+
+    find_element(:xpath, "//*[@class='item-text'][text()='Number of gas molecules']")
+    |> AdaptiveLessonPage.drag(same)
+
+    :timer.sleep(1000)
 
     focus_parent_frame()
+
+    AdaptiveLessonPage.click_next()
+    AdaptiveLessonPage.close_correct_feedback()
   end
 
-  def drag(item, destination) do
-    move_to(item, 5, 5)
-    mouse_down()
-    move_to(destination, 5, 5)
-    mouse_up()
+  def page_5() do
+    # Need this wait so the page fully renders, or the scroll doesn't get us far enough.
+    :timer.sleep(1000)
+
+    AdaptiveLessonPage.scroll(2000)
+
+    click(
+      {:xpath,
+       "//label[div/p/span[text()='Decreasing the volume decreases the pressure in the cylinder.']]"}
+    )
+
+    AdaptiveLessonPage.click_next()
+    AdaptiveLessonPage.close_wrong_feedback()
+
+    click(
+      {:xpath,
+       "//label[div/p/span[text()='Decreasing the volume increases the pressure in the cylinder.']]"}
+    )
+
+    AdaptiveLessonPage.click_next()
+    AdaptiveLessonPage.close_correct_feedback()
+  end
+
+  def page_10() do
+    fill_field({:id, "NewVolume-number-input"}, "5")
+    AdaptiveLessonPage.click_next()
+
+    AdaptiveLessonPage.close_wrong_feedback()
+    element = find_element(:id, "NewVolume-number-input")
+    clear_field(element)
+    fill_field(element, "6")
+
+    # For some reason, on this page, if you don't wait a bit between filling in thas answer and checking the feedback,
+    # you'll sometimes get an incorrect result with the correct answer.
+    :timer.sleep(1000)
+    AdaptiveLessonPage.click_next()
+    AdaptiveLessonPage.close_correct_feedback()
+  end
+
+  def page_11() do
+    :timer.sleep(1000)
+    AdaptiveLessonPage.scroll(500)
+
+    find_element(:css, "#Boyle > iframe")
+    |> focus_frame()
+
+    click({:id, "drop-1-button"})
+    click({:xpath, "//li[contains(@class,'ui-menu-item')][text()='temperature']"})
+
+    click({:id, "drop-2-button"})
+
+    # This is annoying, all the dropdowns are on the screen, but only some visible, so to get an item from the
+    # second dropdown by text like this, we have to index into it because the previous dropdown also had a "volume" option
+    click({:xpath, "(//li[contains(@class,'ui-menu-item')][text()='volume'])[2]"})
+
+    click({:id, "drop-3-button"})
+    click({:xpath, "(//li[contains(@class,'ui-menu-item')][text()='decrease'])[3]"})
+
+    click({:id, "drop-4-button"})
+    click({:xpath, "(//li[contains(@class,'ui-menu-item')][text()='inverse'])[4]"})
+
+    focus_parent_frame()
+
+    AdaptiveLessonPage.click_next()
+    AdaptiveLessonPage.close_correct_feedback()
+  end
+
+  def page_13 do
+    # TODO - better solution than sleep
+    :timer.sleep(2000)
+
+    AdaptiveLessonPage.scroll(2000)
+
+    find_element(:css, "#ThreeTrialsSame > iframe")
+    |> focus_frame()
+
+    changed = find_element(:xpath, "(//*[contains(@class,'group-area ')])[2]")
+    same = find_element(:xpath, "(//*[contains(@class,'group-area ')])[3]")
+
+    find_element(:xpath, "//*[@class='item-text'][text()='Pressure']")
+    |> AdaptiveLessonPage.drag(changed)
+
+    # ui-sortable need a brief wait between drags to register them correctly
+    :timer.sleep(1000)
+
+    find_element(:xpath, "//*[@class='item-text'][text()='The volume of the container']")
+    |> AdaptiveLessonPage.drag(same)
+
+    :timer.sleep(1000)
+
+    find_element(:xpath, "//*[@class='item-text'][text()='Temperature']")
+    |> AdaptiveLessonPage.drag(changed)
+
+    :timer.sleep(1000)
+
+    find_element(:xpath, "//*[@class='item-text'][text()='The number of gas molecules']")
+    |> AdaptiveLessonPage.drag(same)
+
+    :timer.sleep(1000)
+
+    focus_parent_frame()
+
+    AdaptiveLessonPage.click_next()
+    AdaptiveLessonPage.close_correct_feedback()
+  end
+
+  def page_17() do
+    fill_field({:id, "NewPressure-number-input"}, "5")
+    AdaptiveLessonPage.click_next()
+
+    AdaptiveLessonPage.close_wrong_feedback()
+    element = find_element(:id, "NewPressure-number-input")
+    clear_field(element)
+    fill_field(element, "3.8775")
+
+    # For some reason, on this page, if you don't wait a bit between filling in thas answer and checking the feedback,
+    # you'll sometimes get an incorrect result with the correct answer.
+    :timer.sleep(1000)
+    AdaptiveLessonPage.click_next()
+    AdaptiveLessonPage.close_correct_feedback()
   end
 
   def reset_enter_lesson do

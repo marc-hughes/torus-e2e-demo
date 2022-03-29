@@ -5,7 +5,7 @@
 `mix deps.get`
 
 Then choose and install a webdriver to run the tests with, we'll use chromedriver here, but selenium
-might be a good choice too.
+might be a good choice too. PhantomJS probably isn't a good choice.
 
 ### Chromedriver
 
@@ -31,7 +31,14 @@ Leave that running and run the tests
 
 ## Quick tour
 
-You can see the neccessary steps to get hound into a project in commit
+Main test script in:  
+`test/integration/gas_laws_test.exs`
+
+Page object helpers in:  
+`test/integration/pages`
+
+Configuration in:  
+`config/test.exs`
 
 ## Selector notes
 
@@ -45,5 +52,4 @@ But this _does not_ work to query for a specific span containing text:
 
 You can search for attributes of elements inside web components `"//label[@for='Begin-item-0']"`
 
-Some help:
-https://devhints.io/xpath
+Helpful Reference: https://devhints.io/xpath

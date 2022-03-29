@@ -40,14 +40,36 @@ defmodule AdaptiveLessonPage do
   end
 
   def close_correct_feedback() do
+    # Without this wait, we sometimes get it while animating and don't progress correctly
+    :timer.sleep(500)
     wait_click(:css, ".closeFeedbackBtn.correctFeedback")
   end
 
   def close_wrong_feedback() do
+    # Without this wait, we sometimes get it while animating and don't progress correctly
+    :timer.sleep(500)
+    PageHelper.wait_for_visible(:css, ".closeFeedbackBtn.wrongFeedback")
     wait_click(:css, ".closeFeedbackBtn.wrongFeedback")
   end
 
   def scroll(y_position) do
     execute_script("document.querySelector('.mainView').scrollTop = #{y_position};")
+  end
+
+  def completeMCQPage(correctAnswer) do
+    # Need to wait for the page to fully render so we can scroll far enough
+    :timer.sleep(1000)
+    scroll(2000)
+    click(correctAnswer)
+    click_next()
+    close_correct_feedback()
+  end
+
+  def drag(item, destination) do
+    # May need to get smarter about these coordinates some day, but just picking a spot 5px,5px inside the elements works for this
+    move_to(item, 5, 5)
+    mouse_down()
+    move_to(destination, 5, 5)
+    mouse_up()
   end
 end
