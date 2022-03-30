@@ -29,6 +29,11 @@ Leave that running and run the tests
 
 `mix test`
 
+## TODO
+
+There are a bunch of `:timer.sleep` calls in here. Some of them could be replaced by smarter logic like we did over in PageHelper.wait_for_interactable, it will
+take a bit of experimentation to get them right, but should result in faster average test run times, and less flaky tests.
+
 ## Quick tour
 
 Main test script in:  

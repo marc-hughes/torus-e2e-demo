@@ -1,3 +1,4 @@
+# TODO - some of the stuff in here is specific to how the in-spark lessons are laid out and should be re-homed.
 defmodule AdaptiveLessonPage do
   use Hound.Helpers
 

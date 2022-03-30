@@ -45,3 +45,10 @@ Configuration info in:
 `./cypress.json`
 
 Pretty much everything else here is just boilerplate cypress.
+
+## Dashboard support
+
+For recording test results, viewing videos/screenshots/logs, tracking test failures, flakey tests, or durations over time.
+
+Test run dashboard: https://cypress.io
+Open source alternative dashboard: https://sorry-cypress.dev/

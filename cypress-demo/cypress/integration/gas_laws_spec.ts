@@ -6,9 +6,9 @@ describe("Gas Laws", () => {
 
   it("Test the GasLaws content", () => {
 
-    //    enterLessonNoReset();
     enterLesson();
     AdaptiveLesson.restartLesson();
+
     AdaptiveLesson.clickSprButton("start lesson")
 
     page1();
@@ -17,7 +17,7 @@ describe("Gas Laws", () => {
     page4();
     page5();
 
-    //Page 6 just a single click
+    //Page 6 is just a single click
     AdaptiveLesson.clickNext();
 
     // Page 7,8,9 - There's a standard multiple choice flow, so here's a helper.
@@ -83,7 +83,7 @@ describe("Gas Laws", () => {
 
     cy.get("label").contains("Yes.").click();
     AdaptiveLesson.clickNext()
-    AdaptiveLesson.clickNext()
+    AdaptiveLesson.clickNext() // This one was weird, double next button instead of next then correct feedback button. Bug?
   }
 
 
@@ -104,13 +104,11 @@ describe("Gas Laws", () => {
     cy.log("# Page 5")
     cy.get("div").contains("Make Some Observations").should("be.visible")
 
-    //cy.get("#BoylesExperiment").scrollIntoView();
-
     cy.enter("#BoylesExperiment iframe").then(getBody => {
       // This tool lives inside an iframe, so only try to interact with it inside blocks like these
 
       // First, let's check that a couple items exist & are visible since the iframe could load far slower than the
-      // page it's hosted on and we don't want to start dragging to early.
+      // page it's hosted on and we don't want to start dragging too early.
       getBody().find(".item .item-text").eq(1).should("be.visible");
       getBody().find(".group-area-wrapper").eq(2).should("be.visible");
 
@@ -154,15 +152,12 @@ describe("Gas Laws", () => {
   const page11 = () => {
     cy.log("Page 11")
 
-    //cy.get("#Boyle > iframe").scrollIntoView();
-
     cy.enter("#Boyle > iframe").then(getBody => {
       getBody().find("#drop-1-button").click();
       getBody().find("#drop-1-menu .ui-menu-item").contains("temperature").click();
 
       getBody().find("#drop-2-button").click();
       getBody().find("#drop-2-menu .ui-menu-item").contains('volume').click();
-
 
       getBody().find("#drop-3-button").click();
       getBody().find("#drop-3-menu .ui-menu-item").contains("decrease").click()
@@ -180,7 +175,6 @@ describe("Gas Laws", () => {
   const page13 = () => {
     cy.log("Page 13")
 
-    //cy.get("#ThreeTrialsSame").scrollIntoView();
     cy.enter("#ThreeTrialsSame iframe").then(getBody => {
       // This tool lives inside an iframe, so only try to interact with it inside blocks like these
 
