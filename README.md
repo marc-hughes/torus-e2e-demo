@@ -3,7 +3,7 @@
 This repo contains 2 demos of testing a torus adaptive lesson.
 
 See
-[hound-demo/README.md](hound-demo/README.md)
+[hound_demo/README.md](hound_demo/README.md)
 [cypress-demo/README.md](cypress-demo/README.md)
 for specific info on each demo
 
