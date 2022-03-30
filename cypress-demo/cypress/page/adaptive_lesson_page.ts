@@ -13,8 +13,6 @@ const sprButton = () => cy.iframe(
   //        to fail on the first page with multiple buttons on it.
 )
 
-export const sprGroupingTool = () => cy.enter('[src="https://reflector.argos.education/reflector/sim/spr-widget-grouping/prod/1.*"]')
-
 
 export const clickSprButton = (label) => sprButton().find(".button")
   .contains(label)
@@ -41,4 +39,11 @@ export const dragGroupingToolRight = (iframe, label, amount) => {
     .trigger('mousemove', { which: 1, pageX: 100 + amount, pageY: 100 })
     .trigger('mouseup');
 
+}
+
+export const completeMCPage = correctSelector => {
+
+  cy.get(correctSelector).click();
+  clickNext();
+  closeCorrectFeedback();
 }
