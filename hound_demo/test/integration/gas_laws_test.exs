@@ -5,7 +5,10 @@ defmodule Integration.GasLawsTest do
   # Hit an ExUnit timeout without increasing this.
   @tag timeout: 180_000
 
-  hound_session()
+  @chromeArgs ["--headless", "--disable-gpu", "--allow-insecure-localhost"]
+  # chromeArgs = ["--allow-insecure-localhost"]
+
+  hound_session(driver: %{chromeOptions: %{"args" => @chromeArgs}})
 
   test "Gas Laws content" do
     try do
@@ -26,9 +29,9 @@ defmodule Integration.GasLawsTest do
       # Page 7,8,9 - There's a standard multiple choice flow, so here's a helper.
       #    Unlike page 5, where we exercise both correct and incorrect values, we just
       #    get these correct on the first try to quickly get through them.
-      AdaptiveLessonPage.completeMCQPage({:css, "[for=Cylinders-item-2]"})
-      AdaptiveLessonPage.completeMCQPage({:css, "[for=PressureVolume-item-1]"})
-      AdaptiveLessonPage.completeMCQPage({:css, "[for=Inverse-item-1]"})
+      AdaptiveLessonPage.complete_mc_page({:css, "[for=Cylinders-item-2]"})
+      AdaptiveLessonPage.complete_mc_page({:css, "[for=PressureVolume-item-1]"})
+      AdaptiveLessonPage.complete_mc_page({:css, "[for=Inverse-item-1]"})
 
       page_10()
       page_11()
@@ -39,9 +42,9 @@ defmodule Integration.GasLawsTest do
       page_13()
 
       # 14-16
-      AdaptiveLessonPage.completeMCQPage({:css, "[for=ThreeTrialsTemp-item-2]"})
-      AdaptiveLessonPage.completeMCQPage({:css, "[for=GraphRelationship-item-0]"})
-      AdaptiveLessonPage.completeMCQPage({:css, "[for=Equation-item-2]"})
+      AdaptiveLessonPage.complete_mc_page({:css, "[for=ThreeTrialsTemp-item-2]"})
+      AdaptiveLessonPage.complete_mc_page({:css, "[for=GraphRelationship-item-0]"})
+      AdaptiveLessonPage.complete_mc_page({:css, "[for=Equation-item-2]"})
 
       page_17()
 
@@ -191,7 +194,7 @@ defmodule Integration.GasLawsTest do
 
     # For some reason, on this page, if you don't wait a bit between filling in thas answer and checking the feedback,
     # you'll sometimes get an incorrect result with the correct answer.
-    :timer.sleep(1000)
+    :timer.sleep(2000)
     AdaptiveLessonPage.click_next()
     AdaptiveLessonPage.close_correct_feedback()
   end

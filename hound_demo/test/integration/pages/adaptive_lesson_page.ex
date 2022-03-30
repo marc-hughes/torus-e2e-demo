@@ -56,9 +56,9 @@ defmodule AdaptiveLessonPage do
     execute_script("document.querySelector('.mainView').scrollTop = #{y_position};")
   end
 
-  def completeMCQPage(correctAnswer) do
+  def complete_mc_page(correctAnswer) do
     # Need to wait for the page to fully render so we can scroll far enough
-    :timer.sleep(1000)
+    PageHelper.wait_for_visible(:css, correctAnswer)
     scroll(2000)
     click(correctAnswer)
     click_next()
