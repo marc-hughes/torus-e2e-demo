@@ -5,17 +5,23 @@ defmodule Integration.GasLawsTest do
   # Hit an ExUnit timeout without increasing this.
   @tag timeout: 180_000
 
-  @chromeArgs ["--headless", "--disable-gpu", "--allow-insecure-localhost"]
-  # chromeArgs = ["--allow-insecure-localhost"]
+  # @chromeArgs ["--headless", "--disable-gpu", "--allow-insecure-localhost"]
+  @chromeArgs ["--allow-insecure-localhost"]
 
   hound_session(driver: %{chromeOptions: %{"args" => @chromeArgs}})
 
   test "Gas Laws content" do
     try do
+      set_window_size(
+        current_window_handle(),
+        1000,
+        800
+      )
+
       reset_enter_lesson()
 
       # This button is custom & in an iframe.
-      AdaptiveLessonPage.click_spr_button("start lesson")
+      AdaptiveLessonPage.click_spr_button("start lessonz")
 
       page_1()
       page_2()
@@ -49,7 +55,7 @@ defmodule Integration.GasLawsTest do
       page_17()
 
       # TODO - This is about half the lesson, but it demonstrates all the activity types, so we're calling it done for this demo.
-    catch
+    rescue
       error ->
         # TODO - this catch didn't work. not sure how to get screenshots of failing tests in CI.
         take_screenshot()
@@ -283,12 +289,6 @@ defmodule Integration.GasLawsTest do
   end
 
   def reset_enter_lesson do
-    set_window_size(
-      current_window_handle(),
-      1000,
-      800
-    )
-
     LoginPage.open()
     LoginPage.close_cookie_prompt()
     LoginPage.go_to_educator_login()
