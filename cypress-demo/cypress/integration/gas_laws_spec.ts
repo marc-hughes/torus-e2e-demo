@@ -34,6 +34,8 @@ describe("Gas Laws", () => {
 
     page13();
 
+    //cy.pause() // <-- Example of starting the interactive debugger
+
     // 14 - 16
     AdaptiveLesson.completeMCPage("[for=ThreeTrialsTemp-item-2]")
     AdaptiveLesson.completeMCPage("[for=GraphRelationship-item-0]")
@@ -104,20 +106,20 @@ describe("Gas Laws", () => {
     cy.log("# Page 5")
     cy.get("div").contains("Make Some Observations").should("be.visible")
 
-    cy.enter("#BoylesExperiment iframe").then(getBody => {
+    cy.enter("#BoylesExperiment iframe").then(getIframe => {
       // This tool lives inside an iframe, so only try to interact with it inside blocks like these
 
       // First, let's check that a couple items exist & are visible since the iframe could load far slower than the
       // page it's hosted on and we don't want to start dragging too early.
-      getBody().find(".item .item-text").eq(1).should("be.visible");
-      getBody().find(".group-area-wrapper").eq(2).should("be.visible");
+      getIframe().find(".item .item-text").eq(1).should("be.visible");
+      getIframe().find(".group-area-wrapper").eq(2).should("be.visible");
 
       // TODO: Using a constant drag distance right now, but we should query location of each drop spot
       // and caluclate that to support the design changing without having to update the test.
-      AdaptiveLesson.dragGroupingToolRight(getBody(), "Pressure", 250);
-      AdaptiveLesson.dragGroupingToolRight(getBody(), "Number of gas molecules", 500);
-      AdaptiveLesson.dragGroupingToolRight(getBody(), "Temperature", 500);
-      AdaptiveLesson.dragGroupingToolRight(getBody(), "Container volume", 250);
+      AdaptiveLesson.dragGroupingToolRight(getIframe(), "Pressure", 250);
+      AdaptiveLesson.dragGroupingToolRight(getIframe(), "Number of gas molecules", 500);
+      AdaptiveLesson.dragGroupingToolRight(getIframe(), "Temperature", 500);
+      AdaptiveLesson.dragGroupingToolRight(getIframe(), "Container volume", 250);
     });
 
     // Now that we've dragged our boxes into the right spots, lets check it.

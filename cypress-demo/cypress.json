@@ -8,6 +8,8 @@
   "env": {
     "host": "https://torus.qa.argos.education",
     "gas_student_username": "e2e-student@argos.education",
-    "gas_student_password": ""
+    "gas_student_password": "",
+    "infiniscope_username": "",
+    "infiniscope_password": ""
   }
 }
