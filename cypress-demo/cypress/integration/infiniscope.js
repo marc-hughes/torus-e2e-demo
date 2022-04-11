@@ -1,14 +1,17 @@
 // A quick proof of concept to prove we can navigate from infiniscope portal to our app.
+// Goes from infiniscope staging -> torus QA
 
 it("infiniscope page transition", function () {
   cy.visit("https://staging.infiniscope.org/lesson/41");
   cy.get(".img-fluid").click();
   cy.get(".login-form > :nth-child(1) > .form-control").clear();
   cy.get(".login-form > :nth-child(1) > .form-control").type(
-    "marc.hughes@gmail.com"
+    Cypress.env("infiniscope_username")
   );
   cy.get(":nth-child(2) > .form-control").clear();
-  cy.get(":nth-child(2) > .form-control").type();
+  cy.get(":nth-child(2) > .form-control").type(
+    Cypress.env("infiniscope_password")
+  );
   cy.get(".btn-groups > .btn-blue").click();
   cy.get(".ng-dirty > .login-form > .row > .col-7 > span > a").click();
   cy.visit("https://staging.infiniscope.org/lesson/41");

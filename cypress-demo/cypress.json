@@ -10,6 +10,8 @@
     "gas_student_username": "e2e-student@argos.education",
     "gas_student_password": "",
     "infiniscope_username": "",
-    "infiniscope_password": ""
+    "infiniscope_password": "",
+    "moodle_username": "",
+    "moodle_password": ""
   }
 }
